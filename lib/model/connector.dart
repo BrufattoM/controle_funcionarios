@@ -1,4 +1,4 @@
-import 'package:controle_funcionario/model/employer.dart';
+import 'package:controle_funcionarios/model/employer.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
