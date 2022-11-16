@@ -26,18 +26,26 @@ class EmployersDatabase {
   Future _createDB(Database db, int version) async {
     await db.execute('''
     CREATE TABLE IF NOT EXISTS $tableEmployer (
-      ${EmployerFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
-      ${EmployerFields.name} TEXT NOT NULL,
-      ${EmployerFields.cpf} TEXT NOT NULL,
-      ${EmployerFields.age} INTEGER NOT NULL,
-    )
-  ''');
+      ${EmployerFields.id} INTEGER PRIMARY KEY AUTOINCREMENT, 
+      ${EmployerFields.name} TEXT NOT NULL, 
+      ${EmployerFields.cpf} TEXT NOT NULL, 
+      ${EmployerFields.age} INTEGER NOT NULL, 
+      ${EmployerFields.logradouro} TEXT NOT NULL, 
+      ${EmployerFields.endereco} TEXT NOT NULL, 
+      ${EmployerFields.numero} INTEGER NOT NULL, 
+      ${EmployerFields.complemento} TEXT NOT NULL, 
+      ${EmployerFields.bairro} TEXT NOT NULL, 
+      ${EmployerFields.cidade} TEXT NOT NULL, 
+      ${EmployerFields.estado} TEXT NOT NULL, 
+      ${EmployerFields.cep} TEXT NOT NULL, 
+      ${EmployerFields.celular} TEXT NOT NULL)''');
   }
 
   Future<Employer> create(Employer employer) async {
     final db = await instance.database;
 
     final id = await db.insert(tableEmployer, employer.toJson());
+    db.close();
     return employer.copy(id: id);
   }
 
@@ -52,8 +60,10 @@ class EmployersDatabase {
     );
 
     if (maps.isNotEmpty) {
+      db.close();
       return Employer.fromJson(maps.first);
     } else {
+      db.close();
       throw Exception('ID $id not found');
     }
   }
@@ -62,29 +72,32 @@ class EmployersDatabase {
     final db = await instance.database;
 
     final result = await db.query(tableEmployer);
-
+    db.close();
     return result.map((json) => Employer.fromJson(json)).toList();
   }
 
   Future<int> update(Employer employer) async {
     final db = await instance.database;
-
-    return db.update(
+    db.update(
       tableEmployer,
       employer.toJson(),
       where: '${EmployerFields.id} = ?',
       whereArgs: [EmployerFields.id],
     );
+    db.close();
+    return 0;
   }
 
   Future<int> delete(int id) async {
     final db = await instance.database;
 
-    return await db.delete(
+    await db.delete(
       tableEmployer,
       where: '${EmployerFields.id} = ?',
       whereArgs: [id],
     );
+    db.close();
+    return 0;
   }
 
   Future close() async {
