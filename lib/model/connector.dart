@@ -43,9 +43,9 @@ class EmployersDatabase {
 
   Future<Employer> create(Employer employer) async {
     final db = await instance.database;
-
+    
     final id = await db.insert(tableEmployer, employer.toJson());
-    db.close();
+    
     return employer.copy(id: id);
   }
 
@@ -60,10 +60,10 @@ class EmployersDatabase {
     );
 
     if (maps.isNotEmpty) {
-      db.close();
+      
       return Employer.fromJson(maps.first);
     } else {
-      db.close();
+      
       throw Exception('ID $id not found');
     }
   }
@@ -72,7 +72,7 @@ class EmployersDatabase {
     final db = await instance.database;
 
     final result = await db.query(tableEmployer);
-    db.close();
+    
     return result.map((json) => Employer.fromJson(json)).toList();
   }
 
@@ -84,7 +84,7 @@ class EmployersDatabase {
       where: '${EmployerFields.id} = ?',
       whereArgs: [EmployerFields.id],
     );
-    db.close();
+    
     return 0;
   }
 
@@ -96,7 +96,7 @@ class EmployersDatabase {
       where: '${EmployerFields.id} = ?',
       whereArgs: [id],
     );
-    db.close();
+    
     return 0;
   }
 

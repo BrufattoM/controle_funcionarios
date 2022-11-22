@@ -110,7 +110,7 @@ class Employer {
       );
 
   Map<String, Object?> toJson() => {
-        EmployerFields.id: id,
+        //EmployerFields.id: id,
         EmployerFields.name: name,
         EmployerFields.cpf: cpf,
         EmployerFields.age: age,
