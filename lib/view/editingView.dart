@@ -2,14 +2,15 @@ import 'package:controle_funcionarios/model/connector.dart';
 import 'package:controle_funcionarios/model/employer.dart';
 import 'package:flutter/material.dart';
 
-class RegistrationEmp extends StatefulWidget {
-  const RegistrationEmp({super.key});
+class EditEmployer extends StatefulWidget {
+  final Employer empregado;
+  const EditEmployer({required this.empregado, super.key});
 
   @override
-  State<RegistrationEmp> createState() => _RegistrationEmpState();
+  State<EditEmployer> createState() => _RegistrationEmpState();
 }
 
-class _RegistrationEmpState extends State<RegistrationEmp> {
+class _RegistrationEmpState extends State<EditEmployer> {
   TextEditingController nomeController = TextEditingController();
   TextEditingController cpfController = TextEditingController();
   TextEditingController idadeController = TextEditingController();
@@ -26,6 +27,19 @@ class _RegistrationEmpState extends State<RegistrationEmp> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+    nomeController.text = widget.empregado.name;
+    cpfController.text = widget.empregado.cpf;
+    idadeController.text = widget.empregado.age.toString();
+    logradouroController.text = widget.empregado.logradouro;
+    enderecoController.text = widget.empregado.endereco;
+    numeroController.text = widget.empregado.numero.toString();
+    complementoController.text = widget.empregado.complemento;
+    bairroController.text = widget.empregado.bairro;
+    cidadeController.text = widget.empregado.cidade;
+    estadoController.text = widget.empregado.estado;
+    cepController.text = widget.empregado.cep;
+    celularController.text = widget.empregado.celular;
+
     return Scaffold(
       appBar: AppBar(title: const Text('Registro de Empregado')),
       body: Form(
@@ -270,8 +284,8 @@ class _RegistrationEmpState extends State<RegistrationEmp> {
                         // Validate will return true if the form is valid, or false if
                         // the form is invalid.
                         if (_formKey.currentState!.validate()) {
-                          EmployersDatabase.instance.create(Employer(
-                            id: 0,
+                          EmployersDatabase.instance.update(Employer(
+                            id: widget.empregado.id,
                             name: nomeController.text,
                             cpf: cpfController.text,
                             age: int.parse(idadeController.text),
@@ -285,7 +299,7 @@ class _RegistrationEmpState extends State<RegistrationEmp> {
                             cep: cepController.text,
                             celular: celularController.text,
                           ));
-                          ;
+
                           Navigator.pop(context);
                         }
                       },
