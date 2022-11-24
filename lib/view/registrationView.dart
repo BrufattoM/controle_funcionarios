@@ -285,7 +285,6 @@ class _RegistrationEmpState extends State<RegistrationEmp> {
                             cep: cepController.text,
                             celular: celularController.text,
                           ));
-                          ;
                           Navigator.pop(context);
                         }
                       },

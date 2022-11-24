@@ -1,4 +1,5 @@
 import 'package:controle_funcionarios/model/employer.dart';
+import 'package:controle_funcionarios/model/userAuth.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -39,6 +40,18 @@ class EmployersDatabase {
       ${EmployerFields.estado} TEXT NOT NULL, 
       ${EmployerFields.cep} TEXT NOT NULL, 
       ${EmployerFields.celular} TEXT NOT NULL)''');
+
+    await db.execute('''
+    CREATE TABLE IF NOT EXISTS $tableUser (
+      ${UserFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
+      ${UserFields.user} TEXT NOT NULL,
+      ${UserFields.password} TEXT NOT NULL,
+      ${UserFields.level} INTEGER NOT NULL)''');
+
+    const UserAuth AdmlUser = UserAuth(id: 0, user: 'admin', password: 'admin', level: 0);
+    const UserAuth NeutrallUser = UserAuth(id: 0, user: 'user', password: 'user', level: 1);
+    await db.insert(tableUser, AdmlUser.toJson());
+    await db.insert(tableUser, NeutrallUser.toJson());
   }
 
   Future<Employer> create(Employer employer) async {
@@ -66,6 +79,23 @@ class EmployersDatabase {
     }
   }
 
+  Future<UserAuth> readUser(String userName) async {
+    final db = await instance.database;
+
+    final maps = await db.query(
+      tableUser,
+      columns: UserFields.values,
+      where: '${UserFields.user} = ?',
+      whereArgs: [userName],
+    );
+
+    if (maps.isNotEmpty) {
+      return UserAuth.fromJson(maps.first);
+    } else {
+      throw Exception('ID $userName not found');
+    }
+  }
+
   Future<List<Employer>> readAllEmployer() async {
     final db = await instance.database;
 
@@ -80,11 +110,8 @@ class EmployersDatabase {
       tableEmployer,
       employer.toJson(),
       where: '${EmployerFields.id} = ?',
-      whereArgs: [EmployerFields.id],
+      whereArgs: [employer.id],
     );
-    print(employer.id);
-    print(employer.name);
-
     return 0;
   }
 
